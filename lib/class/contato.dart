@@ -35,6 +35,62 @@ class Contatos{
       );
     });
   }
+
+  Future<Contato> salvarContato(Contato contato) async{
+    Database banco = await bd;
+    contato.id = await banco.insert(tabContato, contato.paraMap());
+    return contato;
+  }
+
+  Future<Contato> pegarContato(int id) async{
+    Database banco = await bd;
+    List<Map> mapas = await banco.query(tabContato,
+    columns: [idCol, nomeCol, emailCol, telCol, imgCol],
+    where: "$idCol=?",
+    whereArgs: [id]);
+
+    if(mapas.length > 0){
+      return Contato.doMap(mapas.first);
+    }else{
+      return null;
+    }
+
+  }
+
+  Future<int>removeContato(int id)async{
+    Database banco = await bd;
+    return await banco.delete(tabContato, where: "$idCol=?", whereArgs: [id]);
+
+  }
+
+  Future<int> atualizaContato(Contato contato)async{
+    Database banco = await bd;
+    return banco.update(tabContato, contato.paraMap(), where: "$idCol=?", whereArgs: [contato.id]);
+  }
+
+  Future<List> todosContatos()async{
+    Database banco = await bd;
+    String sql = "SELECT * FROM $tabContato";
+    List lista = await banco.rawQuery(sql);
+    List<Contato> listaContatos = List();
+    for (Map m in lista) {
+      listaContatos.add(Contato.doMap(m));
+    }
+    return listaContatos;
+
+  }
+
+  Future<int> quantidadeContatos()async{
+    Database banco = await bd;
+    String sql = "SELECT COUNT(*) FROM $tabContato";
+    return Sqflite.firstIntValue(await banco.rawQuery(sql));
+  }
+  
+  Future fecharBD() async{
+    Database banco = await bd;
+    banco.close();
+
+  }
   
 }
 
