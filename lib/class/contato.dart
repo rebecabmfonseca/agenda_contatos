@@ -102,6 +102,8 @@ class Contato{
   String telefone;
   String imagem;
 
+  Contato();
+
   Contato.doMap(Map map){
     id = map[idCol];
     nome = map[nomeCol];
