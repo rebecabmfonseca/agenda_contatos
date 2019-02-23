@@ -3,6 +3,7 @@ import 'view/home_page.dart';
 
 void main(){
   runApp(MaterialApp(
-    home: HomePage()
+    home: HomePage(),
+    debugShowCheckedModeBanner: false,
   ));
 }
