@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:agenda_contatos/class/contato.dart';
 import 'package:agenda_contatos/view/contato_page.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+enum OrdenarOpcoes {ordenaraz, ordenarza}
 
 class HomePage extends StatefulWidget {
   @override
@@ -27,6 +30,21 @@ class _HomePageState extends State<HomePage> {
           title: Text("Contatos"),
           backgroundColor: Colors.pink,
           centerTitle: true,
+          actions: <Widget>[
+            PopupMenuButton<OrdenarOpcoes>(
+              itemBuilder: (context) => <PopupMenuEntry<OrdenarOpcoes>>[
+                const PopupMenuItem<OrdenarOpcoes>(
+                  child: Text("Ordenar A-Z"),
+                  value: OrdenarOpcoes.ordenaraz,
+                ),
+                const PopupMenuItem<OrdenarOpcoes>(
+                  child: Text("Ordenar Z-A"),
+                  value: OrdenarOpcoes.ordenarza,
+                )
+              ],
+              onSelected: _ordenarLista,
+            )
+          ],
         ),
         backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
@@ -138,7 +156,10 @@ class _HomePageState extends State<HomePage> {
                           "Ligar",
                           style: TextStyle(color: Colors.pink, fontSize: 20.0),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          launch("tel:${contatos[i].telefone}");
+                          Navigator.pop(context);
+                        },
                       ),
                     ),
                     Padding(
@@ -175,6 +196,23 @@ class _HomePageState extends State<HomePage> {
               );
             },
           );
+        });
+  }
+  void _ordenarLista(OrdenarOpcoes resultado){
+    switch(resultado){
+      case OrdenarOpcoes.ordenaraz:
+        contatos.sort((a,b){
+          return a.nome.toLowerCase().compareTo(b.nome.toLowerCase());
+        });
+        break;
+      case OrdenarOpcoes.ordenarza:
+        contatos.sort((a,b){
+          return b.nome.toLowerCase().compareTo(a.nome.toLowerCase());
+        });
+        break;
+    }
+    setState(() {
+          
         });
   }
 }

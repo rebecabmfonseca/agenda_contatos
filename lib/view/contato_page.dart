@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:image_picker/image_picker.dart';
 import 'package:agenda_contatos/class/contato.dart';
 import 'package:flutter/material.dart';
 
@@ -71,6 +71,16 @@ class _ContatoPageState extends State<ContatoPage> {
                                 ? FileImage(File(_editandoContato.imagem))
                                 : AssetImage("imagens/pessoa.png"))),
                   ),
+                  onTap: () {
+                    ImagePicker.pickImage(
+                      source: ImageSource.camera).then((arquivo){
+                        if(arquivo==null) return;
+                          setState(() {
+                            _editandoContato.imagem = arquivo.path;
+                          });
+                        
+                      });
+                  },
                 ),
                 TextField(
                   controller: _nomeControle,
